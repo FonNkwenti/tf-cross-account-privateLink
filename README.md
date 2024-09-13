@@ -41,7 +41,7 @@ Before you begin, ensure you have the following:
 4. Create a `terraform.tfvars` file in the root directory and pass in values for `region`, `account_id`, `tag_environment` and `tag_project`
    ```bash
     region               = "eu-west-1"
-    account_id           = <<AWS ACCOUNT ID FOR SERVICE PROVIDER>>
+    account_id           = <<aws_account_id_for_service_producter>>
     tag_environment      = "dev"
     tag_project          = "tf-cross-account-privateLink"
    ```

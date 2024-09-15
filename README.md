@@ -16,7 +16,6 @@ Before you begin, ensure you have the following:
 ## Project Structure
 ```bash
 |- service_producer/
-|- same_account_service_consumer/
 |- cross_account_service_consumer/
 ```
 ---
@@ -53,8 +52,13 @@ Clone this repository:
    ```bash
    terraform apply --auto-approve
    ```
-6. Copy the VPC Endpoint Service Link from the outputs 
+6. Copy the value of the `privateLink_service_name`. 
    ```bash
+   Apply complete! Resources: 27 added, 0 changed, 0 destroyed.
+
+   Outputs:
+
+   privateLink_service_name = "com.amazonaws.vpce.eu-west-1.vpce-svc-058a2bf106bf77968"
 
    ```
 7.   
@@ -87,12 +91,12 @@ Clone this repository:
    ```
 6. Copy the value of the `session_manager_link` from the Terraform output. Paste it in your broswer to open up an SSM Session Manager session to the EC2 instance in the cross account service consumer's account. 
    ```bash
-
+   session_manager_link = "https://console.aws.amazon.com/systems-manager/session-manager/i-079d5d8918970a57a"
 
    ```
 7. Copy the value of the `interface_endpoint_dns_name` from the Terraform output. Use `curl` to verify if you can access the service.   
    ```bash
-
+   interface_endpoint_dns_name = "vpce-02623c0267accd034-0p68ymlz.vpce-svc-058a2bf106bf77968.eu-west-1.vpce.amazonaws.com"
 
    ```
 
@@ -106,7 +110,7 @@ Clone this repository:
 ### Remove all resources created by Terraform in the Service Consumer's account
 1. Navigate to the cross-account-service-consumer directory:
    ```bash
-   cd cross-account-service-consumer
+   cd cross-account-service-consumer/
    ```
 2. Destroy all Terraform resources:
    ```bash
@@ -116,7 +120,7 @@ Clone this repository:
 ### Remove all resources created by Terraform in the Service Producers's account
 1. Navigate to the service-producer directory:
    ```bash
-   cd service-producer
+   cd service-producer/
    ```
 2. Destroy all Terraform resources:
    ```bash

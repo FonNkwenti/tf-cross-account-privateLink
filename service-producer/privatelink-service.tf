@@ -1,31 +1,9 @@
-
 #####################################################
-## PrivateLink Setup
+## PrivateLink Service
 #####################################################
-
-
-#######################################################
-##  EC2 SAAS
-#######################################################
-
-
-# resource "aws_instance" "private" {
-#   ami                    = data.aws_ami.amazon_linux_2.id
-#   instance_type          = "t2.micro"
-#   subnet_id              = element(module.service_provider_vpc.private_subnets, 0)
-#   associate_public_ip_address = false
-#   key_name = "default-eu1"
-#   vpc_security_group_ids = [aws_security_group.www_sg.id]
-#    user_data_replace_on_change = true
-#   user_data_base64 = filebase64("${path.module}/webserver.sh")
-
-#   tags = {
-#     Name = "private_instance"
-#   }
-# }
 
 resource "aws_lb" "private_nlb" {
-  name               = "private-nlb"
+  name               = "saas-private-nlb"
   internal           = false
   load_balancer_type = "network"
   subnets            = module.service_provider_vpc.private_subnets
@@ -33,11 +11,12 @@ resource "aws_lb" "private_nlb" {
   enable_deletion_protection = false
   enable_cross_zone_load_balancing = true 
 
-  # provider = aws.service_provider
+  tags = local.common_tags
+
 }
 
 resource "aws_lb_target_group" "private_nlb_tg" {
-  name        = "private-nlb-tg"
+  name        = "sass-private-nlb-tg"
   port        = 80
   protocol    = "TCP"
   vpc_id      = module.service_provider_vpc.vpc_id
@@ -52,6 +31,10 @@ resource "aws_lb_target_group" "private_nlb_tg" {
     port                = 80
     protocol            = "HTTP"
   }
+  tags = local.common_tags
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_lb_listener" "private_nlb_listener" {
@@ -63,38 +46,34 @@ resource "aws_lb_listener" "private_nlb_listener" {
     type             = "forward"
     target_group_arn = aws_lb_target_group.private_nlb_tg.arn
   }
+  tags = local.common_tags
 }
-# resource "aws_lb_target_group_attachment" "private_nlb_tg_attachment" {
-#   target_group_arn = aws_lb_target_group.private_nlb_tg.arn
-#   target_id        = aws_instance.private.id
-#   port             = 80
-# }
+
 
 resource "aws_vpc_endpoint_service" "this" {
-    acceptance_required = false 
+    acceptance_required = false # should be true in real life
     network_load_balancer_arns = [aws_lb.private_nlb.arn]
-    # allowed_principals = ["arn:aws:iam::${var.account_id}:root"]
-    allowed_principals = ["arn:aws:iam::${var.account_id}:root", "arn:aws:iam::${var.cross_account_id}:root"]
-    tags = {
-        Environment = "dev"
-    }
+    allowed_principals = ["arn:aws:iam::${var.cross_account_id}:root"]
+
+    tags = local.common_tags
+
 }
 
-resource "aws_launch_template" "saas_product" {
-  name_prefix   = "saas_product"
+resource "aws_launch_template" "sass" {
+  name_prefix   = "saas-product"
   image_id      = data.aws_ami.amazon_linux_2.id
   instance_type = "t2.micro"
   user_data = filebase64("${path.module}/webserver.sh")
   network_interfaces {
     associate_public_ip_address = false 
     subnet_id = element(module.service_provider_vpc.private_subnets, 0)
-    security_groups             = [aws_security_group.www_sg.id]
+    security_groups             = [aws_security_group.saas_http.id]
   }
   tag_specifications {
     resource_type = "instance"
-    tags = {
-      Name = "sass-instance" 
-    }
+    tags = merge(local.common_tags, {
+    Name = local.instance_name
+  })
   }
 
   lifecycle {
@@ -102,22 +81,19 @@ resource "aws_launch_template" "saas_product" {
   }
 
 }
-resource "aws_autoscaling_group" "saas_product" {
-  # availability_zones = local.azs
+resource "aws_autoscaling_group" "sass" {
   desired_capacity   = 2
   max_size           = 3
   min_size           = 2
   vpc_zone_identifier = module.service_provider_vpc.private_subnets
   launch_template {
-    id      = aws_launch_template.saas_product.id
+    id      = aws_launch_template.sass.id
     version = "$Latest"
   }
-  # target_group_arns = aws_lb_target_group.private_nlb_tg.arn
 }
 
-## create autoscaling attachment to the NLB
 resource "aws_autoscaling_attachment" "private_nlb" {
-  autoscaling_group_name = aws_autoscaling_group.saas_product.id
+  autoscaling_group_name = aws_autoscaling_group.sass.id
   lb_target_group_arn   = aws_lb_target_group.private_nlb_tg.arn
 }
 

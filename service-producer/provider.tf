@@ -13,10 +13,13 @@ provider "aws" {
     region = "eu-west-1"
     shared_credentials_files = ["~/.aws/credentials"]
     profile = "default"
-}
-provider "aws" {
-    alias = "service_consumer"
-    region = "eu-west-1"
-    shared_credentials_files = ["~/.aws/credentials"]
-    profile = "default"
+    default_tags {
+      tags = {
+        Environment = var.environment
+        Project     = var.project_name
+        ManagedBy   = "terraform"
+        Service     = var.service_name
+        CostCenter  = var.cost_center
+      }
+    }
 }

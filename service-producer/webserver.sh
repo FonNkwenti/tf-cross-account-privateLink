@@ -11,7 +11,7 @@ systemctl enable httpd
 # Get instance metadata
 INSTANCE_NAME=$(curl http://169.254.169.254/latest/meta-data/instance-id)
 PRIVATE_IP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)
-PUBLIC_IP=$(curl http://169.254.169.254/latest/meta-data/public-ipv4)
+# PUBLIC_IP=$(curl http://169.254.169.254/latest/meta-data/public-ipv4)
 if [ -z "$PUBLIC_IP" ]; then
     PUBLIC_IP="No public IP assigned"
 fi

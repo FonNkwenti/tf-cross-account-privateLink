@@ -1,7 +1,4 @@
-variable "privateLink_service_name" {
-  type    = string
-  default = ""
-}
+
 variable "region" {
   type    = string
   default = "us-east-1"

@@ -15,26 +15,18 @@ data "aws_ami" "amazon_linux_2" {
 locals {
   dir_name       = "${basename(path.cwd)}"
   name           = "${var.project_name}-${var.environment}"
-  azs            = slice(data.aws_availability_zones.available.names, 0, 1)
+  azs            = slice(data.aws_availability_zones.available.names, 0, 2)
   az1            = data.aws_availability_zones.available.names[0]
   az2            = data.aws_availability_zones.available.names[1]
   ami            = data.aws_ami.amazon_linux_2.id
-  instance_name  = "${local.name}-instance"
+  instance_name  = "${local.name}-saas"
   vpc_name       = "${local.name}-vpc"
+  common_tags = {
+        Environment = var.environment
+        Project     = var.project_name
+        ManagedBy   = "terraform"
+        Service     = var.service_name
+        CostCenter  = var.cost_center
+      }
 
-}
-
-//////////////////////////
-locals {
-  ssm_services = {
-    "ec2messages" : {
-      "name" : "com.amazonaws.${var.region}.ec2messages"
-    },
-    "ssm" : {
-      "name" : "com.amazonaws.${var.region}.ssm"
-    },
-    "ssmmessages" : {
-      "name" : "com.amazonaws.${var.region}.ssmmessages"
-    }
-  }
 }

@@ -15,11 +15,7 @@ provider "aws" {
     profile = "default"
     default_tags {
       tags = {
-        Environment = var.environment
-        Project     = var.project_name
-        ManagedBy   = "terraform"
-        Service     = var.service_name
-        CostCenter  = var.cost_center
+        use_case = "tutorial"
       }
     }
 }

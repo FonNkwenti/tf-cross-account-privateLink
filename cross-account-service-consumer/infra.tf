@@ -6,9 +6,10 @@ resource "aws_vpc" "this" {
   cidr_block           = var.vpc_cidr
   enable_dns_support   = true
   enable_dns_hostnames = true
-  tags = {
-    Name = local.vpc_name
-  }
+
+  tags = merge(local.common_tags, {
+    Name = "${local.name}-vpc"
+  })
 }
 
 
@@ -16,9 +17,9 @@ resource "aws_subnet" "pri_sn1_az1" {
   vpc_id     = aws_vpc.this.id
   cidr_block = cidrsubnet(var.vpc_cidr, 8, 0)
   availability_zone       = local.az1
-  tags = {
+  tags = merge(local.common_tags, {
     Name = "pri-sn1-az1"
-  }
+  })
     lifecycle {
     create_before_destroy = true
   }
@@ -26,9 +27,10 @@ resource "aws_subnet" "pri_sn1_az1" {
 
 resource "aws_route_table" "pri_rt1_az1" {
   vpc_id = aws_vpc.this.id
-  tags = {
+
+  tags = merge(local.common_tags ,{
     Name    = "pri-rt1-az1"
-  }
+  })
 }
 
 resource "aws_route_table_association" "pri_rta1_az2" {
@@ -96,18 +98,18 @@ resource "aws_security_group" "ssm_client" {
 
 }
 
-# resource "aws_vpc_endpoint" "privateLink_service" {
-#   vpc_endpoint_type   = "Interface"
-#   private_dns_enabled = false
-#   vpc_id              = aws_vpc.this.id
-#   service_name        = var.privateLink_service_name
-#   security_group_ids  = [aws_security_group.privateLink_service.id]
-#   subnet_ids          = [aws_subnet.pri_sn1_az1.id]
+resource "aws_vpc_endpoint" "privateLink_service" {
+  vpc_endpoint_type   = "Interface"
+  private_dns_enabled = false
+  vpc_id              = aws_vpc.this.id
+  service_name        = var.privateLink_service_name
+  security_group_ids  = [aws_security_group.privateLink_service.id]
+  subnet_ids          = [aws_subnet.pri_sn1_az1.id]
 
-#   tags = {
-#     Name = "privateLink-service"
-#   }
-# }
+  tags = merge(local.common_tags,{
+    Name = "privateLink-service"
+  })
+}
 
 resource "aws_security_group" "privateLink_service" {
   name        = "privateLink-service"

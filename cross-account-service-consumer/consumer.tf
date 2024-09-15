@@ -21,9 +21,9 @@ resource "aws_iam_role" "ec2_exec_role" {
   ]
 })
 
-  tags = {
+  tags = merge(local.common_tags, {
     tag-key = "ec2-exec-role"
-  }
+  })
 }
 
 
@@ -53,7 +53,7 @@ resource "aws_instance" "privateLink_consumer" {
   vpc_security_group_ids = [aws_security_group.ssm_client.id]
   iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.name
 
-  tags = {
+  tags = merge(local.common_tags, {
     Name = local.instance_name
-  }
+  })
 }

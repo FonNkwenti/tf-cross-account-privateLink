@@ -72,8 +72,8 @@ resource "aws_launch_template" "sass" {
   tag_specifications {
     resource_type = "instance"
     tags = merge(local.common_tags, {
-    Name = local.instance_name
-  })
+      Name = local.instance_name
+    })
   }
 
   lifecycle {

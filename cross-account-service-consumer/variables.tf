@@ -7,15 +7,7 @@ variable "account_id" {
   default = 123456789012
 }
 
-variable "tag_environment" {
-  type    = string
-  default = "dev"
-}
 
-variable "tag_project" {
-  type    = string
-  default = "my-tf-project"
-}
 variable "privateLink_service_name" {
   type    = string
   default = ""
@@ -51,11 +43,3 @@ variable "vpc_cidr" {
   description = "CIDR block of the VPC"
 }
 
-variable "common_tags" {
-  type = map(string)
-  default = {
-    Environment = "dev"
-    Lab         = "ssm-private-ec2"
-  }
-  description = "Common tags for resources"
-}

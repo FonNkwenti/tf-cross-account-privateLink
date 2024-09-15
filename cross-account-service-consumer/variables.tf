@@ -6,6 +6,10 @@ variable "account_id" {
   type    = number
   default = 123456789012
 }
+variable "cross_account_id" {
+  type    = number
+  default = 123456789012
+}
 
 
 variable "privateLink_service_name" {

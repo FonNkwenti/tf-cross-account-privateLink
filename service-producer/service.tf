@@ -3,7 +3,7 @@
 #####################################################
 
 resource "aws_lb" "private_nlb" {
-  name               = "saas-private-nlb"
+  name               = "application-private-nlb"
   internal           = false
   load_balancer_type = "network"
   subnets            = module.service_provider_vpc.private_subnets
@@ -21,7 +21,7 @@ resource "aws_lb" "private_nlb" {
 }
 
 resource "aws_lb_target_group" "private_nlb_tg" {
-  name        = "sass-private-nlb-tg"
+  name        = "application-private-nlb-tg"
   port        = 80
   protocol    = "TCP"
   vpc_id      = module.service_provider_vpc.vpc_id
@@ -64,15 +64,15 @@ resource "aws_vpc_endpoint_service" "this" {
 
 }
 
-resource "aws_launch_template" "sass" {
-  name_prefix   = "saas-product"
+resource "aws_launch_template" "application" {
+  name_prefix   = "application-product"
   image_id      = data.aws_ami.amazon_linux_2.id
   instance_type = "t2.micro"
   user_data = filebase64("${path.module}/webserver.sh")
   network_interfaces {
     associate_public_ip_address = false 
     subnet_id = element(module.service_provider_vpc.private_subnets, 0)
-    security_groups             = [aws_security_group.saas_http.id]
+    security_groups             = [aws_security_group.application_http.id]
   }
   tag_specifications {
     resource_type = "instance"
@@ -86,19 +86,19 @@ resource "aws_launch_template" "sass" {
   }
 
 }
-resource "aws_autoscaling_group" "sass" {
+resource "aws_autoscaling_group" "application" {
   desired_capacity   = 2
   max_size           = 3
   min_size           = 2
   vpc_zone_identifier = module.service_provider_vpc.private_subnets
   launch_template {
-    id      = aws_launch_template.sass.id
+    id      = aws_launch_template.application.id
     version = "$Latest"
   }
 }
 
 resource "aws_autoscaling_attachment" "private_nlb" {
-  autoscaling_group_name = aws_autoscaling_group.sass.id
+  autoscaling_group_name = aws_autoscaling_group.application.id
   lb_target_group_arn   = aws_lb_target_group.private_nlb_tg.arn
 }
 
@@ -128,5 +128,38 @@ resource "aws_security_group" "endpoint_service" {
     cidr_blocks = ["0.0.0.0/0"]  
   }
 
-  tags = local.common_tags
+  tags = merge (local.common_tags, {
+    Name = "endpoint-service"
+  })
+}
+
+resource "aws_security_group" "application_http" {
+  name        = "application-http"
+  description = "Allow HTTP/HTTPS traffic from consumers"
+  vpc_id      = module.service_provider_vpc.vpc_id
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]  
+    security_groups = [aws_security_group.endpoint_service.id]
+  }
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]  
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]  
+  }
+
+  tags = merge (local.common_tags, {
+    Name = "application-http"
+  })
 }

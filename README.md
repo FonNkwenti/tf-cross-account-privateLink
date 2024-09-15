@@ -32,7 +32,7 @@ Clone this repository:
 ### Set up the PrivateLink Endpoint Service in the Service Producer's account
 1. Navigate to the service-provider directory:
    ```bash
-   cd service_producer
+   cd service_producer/
    ```
 2. Initialize Terraform:
    ```bash
@@ -63,23 +63,23 @@ Clone this repository:
 ### Set up the VPC Interface Endpoint in the Service Consumer's account
 1. Navigate to the cross-account-service-consumer directory:
    ```bash
-   cd cross-account-service-consumer
+   cd cross-account-service-consumer/
    ```
 2. Initialize Terraform:
    ```bash
    terraform init
    ```
 3. Review and modify `variables.tf` if required
-4. Create a `terraform.tfvars` file in the root directory and pass in values for the variables. Make sure you update the value of the `privateLink_service_name` copied from the Terraform output of Endpoint service deployment.
+4. Create a `terraform.tfvars` file in the root directory and pass in values for the variables. Make sure you update the value of the `privateLink_service_name` copied from the Terraform output of the Endpoint service deployment.
    ```bash
-      region               = "eu-west-1"
-      account_id           = <<aws_account_id_for_service_producer>>
-      cross_account_id     = <<aws_account_id_for_cross_account_service_consumer>>
-      privateLink_service_name    = "com.amazonaws.vpce.eu-west-1.vpce-svc-0aa398ea0d6f8741a"
-      environment          = "dev"
-      project_name         = "tf-cross-account-privateLink"
-      service_name         = "privateLink-service"
-      cost_center          = "237"
+      region                     = "eu-west-1"
+      account_id                 = <<aws_account_id_for_service_producer>>
+      cross_account_id           = <<aws_account_id_for_cross_account_service_consumer>>
+      privateLink_service_name   = "com.amazonaws.vpce.eu-west-1.vpce-svc-0aa398ea0d6f8741a"
+      environment                = "dev"
+      project_name               = "tf-cross-account-privateLink"
+      service_name               = "privateLink-service"
+      cost_center                = "237"
    ```
 5. Apply the Terraform configure:
    ```bash

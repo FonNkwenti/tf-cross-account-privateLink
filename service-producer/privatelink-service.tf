@@ -7,11 +7,16 @@ resource "aws_lb" "private_nlb" {
   internal           = false
   load_balancer_type = "network"
   subnets            = module.service_provider_vpc.private_subnets
+  security_groups    = [aws_security_group.endpoint_service.id]
 
   enable_deletion_protection = false
   enable_cross_zone_load_balancing = true 
 
   tags = local.common_tags
+
+  lifecycle {
+    create_before_destroy = true
+  }
 
 }
 
@@ -97,3 +102,31 @@ resource "aws_autoscaling_attachment" "private_nlb" {
   lb_target_group_arn   = aws_lb_target_group.private_nlb_tg.arn
 }
 
+
+resource "aws_security_group" "endpoint_service" {
+  name        = "endpoint-service"
+  description = "Allow HTTP/HTTPS traffic from consumers"
+  vpc_id      = module.service_provider_vpc.vpc_id
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]  
+  }
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]  
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]  
+  }
+
+  tags = local.common_tags
+}

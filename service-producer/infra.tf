@@ -27,7 +27,7 @@ module "service_provider_vpc" {
 
 resource "aws_security_group" "saas_http" {
   name        = "saas-http"
-  description = "Allow HTTP/HTTPS traffic from the internet"
+  description = "Allow HTTP/HTTPS traffic from consumers"
   vpc_id      = module.service_provider_vpc.vpc_id
 
   ingress {
@@ -35,12 +35,7 @@ resource "aws_security_group" "saas_http" {
     to_port     = 80
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]  
-  }
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]  
+    security_groups = [aws_security_group.endpoint_service.id]
   }
   ingress {
     from_port   = 443

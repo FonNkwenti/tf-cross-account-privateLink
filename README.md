@@ -128,6 +128,25 @@ Clone this repository:
    ```
 ---
 
+## Testing
+1. Paste the session manager link to the consumers EC2 instance in your web browser.
+2. Test connectivity to the Endpoint service via the interface VPC endpoint
+   ```bash
+      sh-4.2$ curl http://vpce-026bc4f220976bfe7-uvx9sx52.vpce-svc-0f8de98ff3b50bd01.eu-west-1.vpce.amazonaws.com<html>
+      <head>
+         <title>Instance Information</title>
+      </head>
+      <body>
+         <h1>Instance Information</h1>
+         <p><strong>Instance Name:</strong> i-0cbd519ffe7583c5d</p>
+         <p><strong>Private IP:</strong> 10.255.10.40</p>
+         <p><strong>Public IP:</strong> No public IP assigned</p>
+         <p><strong>Availability Zone:</strong> eu-west-1a</p>
+         <p><strong>Region:</strong> eu-west-1</p>
+      </body>
+      </html>
+```
+
 <!-- ## Tutorial
 [Private Serverless REST API with API Gateway: Lambda, DynamoDB, VPC Endpoints & Terraform - Part 1](https://www.serverlessguru.com/blog/private-serverless-rest-api-with-api-gateway-lambda-dynamodb-vpc-endpoints-terraform---part-1) --> -->
 

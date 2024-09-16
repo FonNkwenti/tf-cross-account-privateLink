@@ -145,7 +145,7 @@ Clone this repository:
          <p><strong>Region:</strong> eu-west-1</p>
       </body>
       </html>
-```
+   ```
 
 <!-- ## Step-by-step Turial -->
 

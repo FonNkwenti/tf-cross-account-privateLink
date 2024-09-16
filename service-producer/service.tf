@@ -17,7 +17,6 @@ resource "aws_lb" "private_nlb" {
   lifecycle {
     create_before_destroy = true
   }
-
 }
 
 resource "aws_lb_target_group" "private_nlb_tg" {
@@ -52,6 +51,7 @@ resource "aws_lb_listener" "private_nlb_listener" {
     target_group_arn = aws_lb_target_group.private_nlb_tg.arn
   }
   tags = local.common_tags
+
 }
 
 

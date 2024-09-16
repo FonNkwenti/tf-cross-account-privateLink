@@ -73,7 +73,6 @@ resource "aws_security_group" "ssm" {
     lifecycle {
     create_before_destroy = true
   }
-
 }
 
 resource "aws_security_group" "ssm_client" {
@@ -92,10 +91,12 @@ resource "aws_security_group" "ssm_client" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  tags = merge(local.common_tags,{
+    Name = "ssm-client"
+  })
     lifecycle {
     create_before_destroy = true
   }
-
 }
 
 resource "aws_vpc_endpoint" "privateLink_service" {
@@ -130,6 +131,10 @@ resource "aws_security_group" "privateLink_service" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  tags = merge(local.common_tags,{
+    Name = "privateLink-service"
+  })
 
   lifecycle {
     create_before_destroy = true

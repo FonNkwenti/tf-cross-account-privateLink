@@ -8,8 +8,8 @@ Before you begin, ensure you have the following:
 - Terraform installed locally
 - AWS CLI installed and configured with appropriate access credentials profiles for the 2 AWS accounts
 
-<!-- ## Architecture
-![Diagram](private-rest-api-part2-white.webp) -->
+## Architecture
+![Diagram](cross-account-privatelink-cross-account.webp)
 
 ---
 

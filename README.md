@@ -147,8 +147,8 @@ Clone this repository:
       </html>
 ```
 
-<!-- ## Tutorial
-[Private Serverless REST API with API Gateway: Lambda, DynamoDB, VPC Endpoints & Terraform - Part 1](https://www.serverlessguru.com/blog/private-serverless-rest-api-with-api-gateway-lambda-dynamodb-vpc-endpoints-terraform---part-1) --> -->
+<!-- ## Step-by-step Turial -->
+
 
 ## License
 

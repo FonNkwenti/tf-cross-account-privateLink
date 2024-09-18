@@ -1,5 +1,5 @@
 # Using Terraform to build Cross-Account Service Integrations with AWS PrivateLink
-This project demonstrates how to use Terraform to Cross-Account Service Integrations with AWS PrivateLink
+This project demonstrates how to use Terraform to build cross-account service integrations with AWS PrivateLink
 
 ## Prerequisites
 Before you begin, ensure you have the following:

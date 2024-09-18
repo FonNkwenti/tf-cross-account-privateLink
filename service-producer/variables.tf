@@ -12,15 +12,6 @@ variable "cross_account_id" {
   default = 123456789012
 }
 
-variable "tag_environment" {
-  type    = string
-  default = "dev"
-}
-
-variable "tag_project" {
-  type    = string
-  default = "my-tf-project"
-}
 variable "privateLink_allowed_principals" {
   type    = list
   default = []
